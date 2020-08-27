@@ -1,33 +1,27 @@
 package cn.itcast.springboot.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 import javax.sql.DataSource;
 
-@Configuration
-@PropertySource("classpath:jdbc.properties")
+@Configuration//声明一个类是一个java配置类，相当于一个xml文件
+@EnableConfigurationProperties(JdbcProperties.class)
 public class JdbcConfiguration {
 
-    @Value("${jdbc.driverClassName}")
-    private String driverClassName;
-    @Value("${jdbc.url}")
-    private String url;
-    @Value("${jdbc.userName}")
-    private String username;
-    @Value("${jdbc.passWord}")
-    private String password;
+    @Autowired
+    private JdbcProperties jdbcProperties;
 
-    @Bean
+    @Bean //将方法的返回值注入到spring容器
     public DataSource dataSource(){
         DruidDataSource dataSource =   new DruidDataSource();
-        dataSource.setUrl(this.url);
-        dataSource.setDriverClassName(this.driverClassName);
-        dataSource.setUsername(this.username);
-        dataSource.setPassword(this.password);
+        dataSource.setUrl(this.jdbcProperties.getUrl());
+        dataSource.setDriverClassName(this.jdbcProperties.getDriverClassName());
+        dataSource.setUsername(this.jdbcProperties.getUserName());
+        dataSource.setPassword(this.jdbcProperties.getPassWord());
         return dataSource;
     }
 }
